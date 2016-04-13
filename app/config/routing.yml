@@ -10,3 +10,8 @@ EventBundle_event_annotation:
     resource: "@YodaEventBundle/Controller"
     prefix:   /
     type:     annotation
+
+user_controller:
+  resource: "@UserBundle/Controller"
+  prefix: /
+  type:       annotation
