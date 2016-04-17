@@ -2,6 +2,7 @@
 
 namespace Yoda\EventBundle\Controller;
 
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -38,6 +39,8 @@ class EventController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->enforceUserSecuriety();
+
         $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -81,6 +84,8 @@ class EventController extends Controller
      */
     public function newAction()
     {
+        $this->enforceUserSecuriety();
+
         $entity = new Event();
         $form   = $this->createCreateForm($entity);
 
@@ -159,6 +164,8 @@ class EventController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        $this->enforceUserSecuriety();
+
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('YodaEventBundle:Event')->find($id);
@@ -189,6 +196,8 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $this->enforceUserSecuriety();
+
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
@@ -222,5 +231,13 @@ class EventController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
             ;
+    }
+
+    public function enforceUserSecuriety() {
+        $securityContext = $this->get('security.context');
+
+        if(!$securityContext->isGranted('ROLE_USER')){
+            throw new AccessDeniedException('Need role user');
+        }
     }
 }
