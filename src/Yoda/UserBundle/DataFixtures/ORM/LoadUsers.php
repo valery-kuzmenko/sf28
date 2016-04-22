@@ -19,7 +19,16 @@ class LoadUsers implements FixtureInterface, ContainerAwareInterface
     {
         $user = new User();
         $user->setUsername('user');
-        $user->setPassword($user, $this->encodePassword('user'));
+        $user->setPassword($this->encodePassword($user, 'user'));
+        $user->setEmail('user@ya.ru');
+        $manager->persist($user);
+
+        $user = new User();
+        $user->setUsername('admin');
+        $user->setPassword($this->encodePassword($user, 'admin'));
+        $user->setRoles(array('ROLE_ADMIN'));
+        $user->setIsActive(true);
+        $user->setEmail('admin@ya.ru');
         $manager->persist($user);
 
         // the queries aren't done until now

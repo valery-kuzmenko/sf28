@@ -26,7 +26,7 @@ class EventController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
+        //var_dump($em->getRepository('UserBundle:User')->findOneByUsernameOrEmail('user@ya.ru'));
         $entities = $em->getRepository('YodaEventBundle:Event')->findAll();
 
         return array(
