@@ -3,7 +3,10 @@
 namespace Yoda\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 //UserInterface replaced by AdvancedUserInterface
 // it has more additional methods
 //isAccountNonExpired isAccountNonLocked isCredentialsNonExpired isEnabled
@@ -13,6 +16,8 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="Yoda\UserBundle\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="Email is unique!")
+ * @UniqueEntity(fields="username", message="Usernamr is unique")
  */
 class User implements AdvancedUserInterface, \Serializable
 {
@@ -28,6 +33,8 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * @var string
      *
+     * @Assert\NotBlank(message="Eneter Username!")
+     * @Assert\Length(min="3", minMessage="Enter more than 3", max="15", maxMessage="Enter less than 15")
      * @ORM\Column(name="username", type="string", length=255, unique=true)
      */
     private $username;
@@ -56,10 +63,19 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * @var string
      *
+     * @Assert\NotBlank(message="Enter Email!")
+     * @Assert\Email()
+     *
      * @ORM\Column(name="email", type="string", length=255)
      */
     private $email;
 
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     * temporary stores data, not persisted in database
+     */
+    private $plainPassword;
 
     /**
      * Get id
@@ -119,10 +135,10 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function getRoles()
     {
-        $roles = $this->roles;
+        $roles = $this->roles ? : array();
         $roles[] = 'ROLE_USER';
 
-        return array_unique($this->roles);
+        return array_unique($roles);
     }
 
     public function setRoles($roles)
@@ -134,7 +150,7 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
+        $this->setPlainPassword(null);
     }
 
     public function getSalt()
@@ -218,17 +234,33 @@ class User implements AdvancedUserInterface, \Serializable
         return serialize(array(
             $this->id,
             $this->username,
-            $this->password
+            $this->password,
         ));
     }
 
     public function unserialize($serialized)
     {
-        list(
+        list (
             $this->id,
             $this->username,
-            $this->password
-        ) = $this->unserialize($serialized);
+            $this->password,
+            ) = unserialize($serialized);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
     }
 
 
