@@ -10,7 +10,7 @@ namespace Yoda\UserBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Yoda\EventBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Yoda\UserBundle\Entity\User;
@@ -86,6 +86,6 @@ class RegisterController extends Controller
         $providerKey = 'secured_area';
         $token = new UsernamePasswordToken($user, null, $providerKey, $user->getRoles());
 
-        $this->container->get('security.context')->setToken($token);
+        $this->getSecurityContext()->setToken($token);
     }
 }

@@ -18,7 +18,8 @@
         "sensio/framework-extra-bundle": "^3.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "symfony/assetic-bundle": "^2.8",
-        "phpunit/phpunit": "~4.8"
+        "phpunit/phpunit": "~4.8",
+        "stof/doctrine-extensions-bundle": "^1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",

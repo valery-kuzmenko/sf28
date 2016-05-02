@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 //UserInterface replaced by AdvancedUserInterface
 // it has more additional methods
@@ -78,9 +79,39 @@ class User implements AdvancedUserInterface, \Serializable
     private $plainPassword;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Yoda\EventBundle\Entity\Event",
+     *     mappedBy="owner")
+     */
+    private $events;
+
+    /**
+     * @return mixed
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /*
+    @param mixed $events
+    will not use these method because all relations will be set
+    on owning side
+
+    public function setEvents($events)
+    {
+        $this->events = $events;
+    }
+    */
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+    }
+
+    /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -103,7 +134,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get username
      *
-     * @return string 
+     * @return string
      */
     public function getUsername()
     {
@@ -126,7 +157,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -135,7 +166,7 @@ class User implements AdvancedUserInterface, \Serializable
 
     public function getRoles()
     {
-        $roles = $this->roles ? : array();
+        $roles = $this->roles ?: array();
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -195,11 +226,10 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
 
-
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -222,7 +252,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {

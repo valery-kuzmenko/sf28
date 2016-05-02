@@ -1,4 +1,4 @@
-{% extends 'EventBundle::layout.html.twig' %}
+{% extends 'YodaEventBundle::layout.html.twig' %}
 
 {% block body %}
 
@@ -12,14 +12,18 @@
                 <img src="http://maps.googleapis.com/maps/api/staticmap?center={{ entity.location | url_encode }}&markers=color:red%7Ccolor:red%7C{{ entity.location | url_encode }}&zoom=14&size=300x300&maptype=roadmap&sensor=false" />
             </header>
             <section>
-                <h1>
-                    {{ entity.name }}
-                    <a class="button" href="{{ path('event_edit', {'id': entity.id}) }}">edit</a>
-                </h1>
-
+                {% if(app.user == entity.owner) %}
+                    <h1>
+                        {{ entity.name }}
+                        <a class="button" href="{{ path('event_edit', {'id': entity.id}) }}">edit</a>
+                    </h1>
+                {% endif %}
                 <dl>
                     <dt>where:</dt>
                     <dd>{{ entity.location }}</dd>
+
+                    <dt>owner:</dt>
+                    <dd>{{ entity.owner.username }}</dd>
 
                     <dt>when:</dt>
                     <dd>{{ entity.time | date('g:ia / l M j, Y') }}</dd>
