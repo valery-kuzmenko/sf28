@@ -15,7 +15,7 @@
                 {% if(app.user == entity.owner) %}
                     <h1>
                         {{ entity.name }}
-                        <a class="button" href="{{ path('event_edit', {'id': entity.id}) }}">edit</a>
+                        <a class="button" href="{{ path('event_edit', {'slug': entity.slug}) }}">edit</a>
                     </h1>
                 {% endif %}
                 <dl>

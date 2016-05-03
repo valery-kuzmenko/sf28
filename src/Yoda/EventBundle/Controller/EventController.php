@@ -2,6 +2,7 @@
 
 namespace Yoda\EventBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,7 +27,7 @@ class EventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         //var_dump($em->getRepository('UserBundle:User')->findOneByUsernameOrEmail('user@ya.ru'));
-        $entities = $em->getRepository('YodaEventBundle:Event')->findAll();
+        $entities = $em->getRepository('YodaEventBundle:Event')->getUpcomingEvents();
 
         return array(
             'entities' => $entities,
@@ -53,7 +54,7 @@ class EventController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('event_show', array('slug' => $entity->getSlug())));
         }
 
         return $this->render('YodaEventBundle:Event:new.html.twig', array(
@@ -102,17 +103,20 @@ class EventController extends Controller
      * Finds and displays a Event entity.
      *
      */
-    public function showAction($id)
+    public function showAction($slug)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('YodaEventBundle:Event')->find($id);
+        /**
+         * @var Event $entity
+         */
+        $entity = $em->getRepository('YodaEventBundle:Event')->findOneBy(array('slug' => $slug));
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Event entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($entity->getId());
 
         return $this->render('YodaEventBundle:Event:show.html.twig', array(
             'entity' => $entity,
@@ -235,7 +239,7 @@ class EventController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('event_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('event_delete', array('slug' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm();

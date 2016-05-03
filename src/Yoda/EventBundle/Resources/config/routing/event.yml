@@ -4,7 +4,7 @@ event_index:
     methods:  GET
 
 event_show:
-    path:     /{id}/show
+    path:     /{slug}/show
     defaults: { _controller: "YodaEventBundle:Event:show" }
     methods:  GET
 
@@ -14,12 +14,12 @@ event_new:
     methods:  [GET, POST]
 
 event_edit:
-    path:     /{id}/edit
+    path:     /{slug}/edit
     defaults: { _controller: "YodaEventBundle:Event:edit" }
     methods:  [GET, POST]
 
 event_delete:
-    path:     /{id}/delete
+    path:     /{slug}/delete
     defaults: { _controller: "YodaEventBundle:Event:delete" }
     methods:  DELETE
 event_create:
