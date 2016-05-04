@@ -230,6 +230,13 @@ class EventController extends Controller
     }
 
     /**
+     *
+     */
+    public function attendAction(){
+
+    }
+
+    /**
      * Creates a form to delete a Event entity by id.
      *
      * @param mixed $id The entity id
