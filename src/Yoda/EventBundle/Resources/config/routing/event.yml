@@ -27,9 +27,12 @@ event_create:
     defaults: { _controller: "YodaEventBundle:Event:create" }
     methods:  POST
 event_attend:
-  path: /{id}/attend
-  defaults: {_controller: "YodaEventBundle:Event:attend"}
-  methods: [POST]
+  path: /{id}/attend.{format}
+  defaults: {_controller: "YodaEventBundle:Event:attend", format:html}
+  requirements:
+    format: json
 event_unattend:
-  path: /{id}/unattend
-  defaults: {_controller: "YodaEventBundle:Event:unattend"}
+  path: /{id}/unattend.{format}
+  defaults: {_controller: "YodaEventBundle:Event:unattend", format:html}
+  requirements:
+    format: json

@@ -253,4 +253,8 @@ class Event
     {
         return $this->details;
     }
+
+    public function hasAttendee(User $user){
+        return $this->getAttendees()->contains($user);
+    }
 }

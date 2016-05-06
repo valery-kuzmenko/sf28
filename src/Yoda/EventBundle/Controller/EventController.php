@@ -4,8 +4,10 @@ namespace Yoda\EventBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\Response;
 use Yoda\EventBundle\Entity\Event;
 use Yoda\EventBundle\Form\EventType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -25,13 +27,7 @@ class EventController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        //var_dump($em->getRepository('UserBundle:User')->findOneByUsernameOrEmail('user@ya.ru'));
-        $entities = $em->getRepository('YodaEventBundle:Event')->getUpcomingEvents();
-
-        return array(
-            'entities' => $entities,
-        );
+        return array();
     }
 
     /**
@@ -229,11 +225,76 @@ class EventController extends Controller
         return $this->redirect($this->generateUrl('event'));
     }
 
-    /**
-     *
-     */
-    public function attendAction(){
+    public function attendAction($id, $format)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var Event $event
+         */
+        $event = $em->getRepository('YodaEventBundle:Event')->find($id);
 
+        if (!$event) {
+            throw $this->createNotFoundException('Unable to find Event entity.');
+        }
+
+        if(!$event->hasAttendee($this->getUser())) {
+            $event->getAttendees()->add($this->getUser());
+        }
+
+        $em->persist($event);
+
+        $em->flush();
+
+        return $this->createAttendingResponse($event, $format);
+    }
+
+    public function unattendAction($id, $format){
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var Event $event
+         */
+        $event = $em->getRepository('YodaEventBundle:Event')->find($id);
+
+        if (!$event) {
+            throw $this->createNotFoundException('Unable to find Event entity.');
+        }
+
+        if($event->hasAttendee($this->getUser())) {
+            $event->getAttendees()->removeElement($this->getUser());
+        }
+
+        $em->persist($event);
+
+        $em->flush();
+
+        return $this->createAttendingResponse($event, $format);
+    }
+
+    private function createAttendingResponse(Event $event, $format){
+        if($format == 'json'){
+            $data = array(
+                'attending' => $event->hasAttendee($this->getUser())
+            );
+
+            $response = new JsonResponse($data);
+
+            return $response;
+        }
+
+        $url = $this->generateUrl('event_show', array(
+            'slug' => $event->getSlug()
+        ));
+
+        return $this->redirect($url);
+    }
+
+    public function _upcomingEventsAction($max){
+        $em = $this->getDoctrine()->getManager();
+        $events = $em->getRepository('YodaEventBundle:Event')->getUpcomingEvents($max);
+
+        return $this->render('YodaEventBundle:Event:_upcommingEvents.html.twig', array(
+            'events' => $events
+        ));
     }
 
     /**
