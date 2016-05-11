@@ -291,6 +291,9 @@ class User implements AdvancedUserInterface, \Serializable
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
+
+        // null to doctrine knows that these field was changed
+        $this->setPassword(null);
     }
 
 
