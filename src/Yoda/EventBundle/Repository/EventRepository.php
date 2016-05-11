@@ -3,6 +3,7 @@
 namespace Yoda\EventBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Yoda\EventBundle\Entity\Event;
 
 /**
  * EventRepository
@@ -25,5 +26,19 @@ class EventRepository extends EntityRepository
         return $qb
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @return Event[]
+     */
+    public function getRecentlyUpdatedEvents(){
+        $events = $this->createQueryBuilder('e')
+            ->andWhere('e.updatedAt > :evdate')
+            ->setParameter('evdate', new \DateTime('24 hours ago'))
+            ->orderBy('e.updatedAt', 'ASC')
+            ->getQuery()
+            ->execute();
+
+        return $events;
     }
 }

@@ -16,6 +16,7 @@
                 <dd>{{ event.time | date('g:ia / l M j, Y') }}</dd>
 
                 <dt>who:</dt>
+                <dt>{{ event.createdAt|ago }}</dt>
                 <dd>Todo # of people</dd>
             </dl>
         </section>

@@ -288,7 +288,7 @@ class EventController extends Controller
         return $this->redirect($url);
     }
 
-    public function _upcomingEventsAction($max){
+    public function _upcomingEventsAction($max=null){
         $em = $this->getDoctrine()->getManager();
         $events = $em->getRepository('YodaEventBundle:Event')->getUpcomingEvents($max);
 
