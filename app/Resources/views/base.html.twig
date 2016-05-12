@@ -12,9 +12,9 @@
 
         {% block stylesheets %}
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-                <link rel="stylesheet" href="/bundles/yodaevent/css/event.css" />
-                <link rel="stylesheet" href="/bundles/yodaevent/css/events.css" />
-                <link rel="stylesheet" href="/bundles/yodaevent/css/main.css" />
+                <link rel="stylesheet" href="{{asset('bundles/yodaevent/css/event.css')}}" />
+                <link rel="stylesheet" href="{{asset('bundles/yodaevent/css/events.css')}}" />
+                <link rel="stylesheet" href="{{asset('bundles/yodaevent/css/main.css')}}" />
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
